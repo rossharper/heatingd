@@ -7,7 +7,7 @@ var RunLoop = require('./RunLoop').RunLoop,
 
 var DEFAULTS = {
     INTERVAL_SECONDS : 30,
-    SENSOR_DATA_PATH : "/var/lib/homecontrol/sensordata/TA"
+    SENSOR_DATA_PATH : "/var/lib/homecontrol/sensordata/temperatureSensors/TA"
 };
 
 function usage() {

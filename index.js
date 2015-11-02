@@ -1,6 +1,7 @@
 var RunLoop = require('./RunLoop').RunLoop,
-    CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider
-    TargetTemperatureProvider = require('./TargetTemperatureProvider').TargetTemperatureProvider
+    CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider,
+    TargetTemperatureProvider = require('./TargetTemperatureProvider').TargetTemperatureProvider,
+    HeatingControl = require('./HeatingControl').HeatingControl
 ;
 
 function CallForHeatOnCommand() {
@@ -12,23 +13,6 @@ function CallForHeatOnCommand() {
 function CallForHeatOffCommand() {
     this.execute = function() {
         console.log("Calling for heat");
-    }
-}
-
-function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, callForHeatOnCommand, callForHeatOffCommand) {
-    this.onInterval = function() {
-        if(shouldCallForHeat()) {
-            callForHeatOnCommand.execute();
-        }
-        else {
-            callForHeatOffCommand.execute();
-        }
-    }
-
-    function shouldCallForHeat() {
-        var targetTemp = targetTemperatureProvider.getTargetTemperature();
-        var currentTemp = currentTemperatureProvider.getCurrentTemperature();
-        return (currentTemp < targetTemp); // TODO: hysteresis
     }
 }
 

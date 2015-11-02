@@ -11,6 +11,7 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     function shouldCallForHeat() {
         var targetTemp = targetTemperatureProvider.getTargetTemperature();
         var currentTemp = currentTemperatureProvider.getCurrentTemperature();
+        console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
         return (currentTemp < targetTemp); // TODO: hysteresis
     }
 }

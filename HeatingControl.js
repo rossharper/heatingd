@@ -9,10 +9,18 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     }
 
     function shouldCallForHeat() {
-        var targetTemp = targetTemperatureProvider.getTargetTemperature();
-        var currentTemp = currentTemperatureProvider.getCurrentTemperature();
-        console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
-        return (currentTemp < targetTemp); // TODO: hysteresis
+        var currentLessThanTarget = false;
+
+        try {
+            var targetTemp = targetTemperatureProvider.getTargetTemperature();
+            var currentTemp = currentTemperatureProvider.getCurrentTemperature();
+            console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
+            currentLessThanTarget = (currentTemp < targetTemp); // TODO: hysteresis
+        }
+        catch(e) {
+            console.error(e);
+        }
+        return currentLessThanTarget;
     }
 }
 

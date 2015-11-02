@@ -3,13 +3,13 @@ var callForHeatShellCommand = "";
 
 function CallForHeatOnCommand() {
     this.execute = function() {
-        console.log("Calling for heat");
+        console.log("Calling for heat ON");
     }
 }
 
 function CallForHeatOffCommand() {
     this.execute = function() {
-        console.log("Calling for heat");
+        console.log("Calling for heat OFF");
     }
 }
 

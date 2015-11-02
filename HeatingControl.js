@@ -15,7 +15,7 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
             var targetTemp = targetTemperatureProvider.getTargetTemperature();
             var currentTemp = currentTemperatureProvider.getCurrentTemperature();
             console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
-            currentLessThanTarget = (currentTemp < targetTemp); // TODO: hysteresis
+            currentLessThanTarget = (currentTemp < targetTemp); // TODO: hysteresis & switching differential
         }
         catch(e) {
             console.error(e);

@@ -63,7 +63,7 @@ function start(args) {
     console.log("Monitoring programme/schedule data from path: " + args.programmeDataPath);
 
     var heatingControl = new HeatingControl(
-        new TargetTemperatureProvider(),
+        new TargetTemperatureProvider(args.programmeDataPath),
         new CurrentTemperatureProvider(args.sensorDataPath),
         new CallForHeatCommandFactory.CallForHeatOnCommand(),
         new CallForHeatCommandFactory.CallForHeatOffCommand()

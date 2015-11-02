@@ -1,12 +1,7 @@
 var RunLoop = require('./RunLoop').RunLoop,
     CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider
+    TargetTemperatureProvider = require('./TargetTemperatureProvider').TargetTemperatureProvider
 ;
-
-function TargetTemperatureProvider() {
-    this.getTargetTemperature = function() {
-        return 20.00;
-    }
-}
 
 function CallForHeatOnCommand() {
     this.execute = function() {

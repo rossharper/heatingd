@@ -2,19 +2,8 @@ var RunLoop = require('./RunLoop').RunLoop,
     CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider,
     TargetTemperatureProvider = require('./TargetTemperatureProvider').TargetTemperatureProvider,
     HeatingControl = require('./HeatingControl').HeatingControl
+    CallForHeatCommandFactory = require('./CallForHeatCommandFactory')
 ;
-
-function CallForHeatOnCommand() {
-    this.execute = function() {
-        console.log("Calling for heat");
-    }
-}
-
-function CallForHeatOffCommand() {
-    this.execute = function() {
-        console.log("Calling for heat");
-    }
-}
 
 function start() {
     console.log("Starting heatingd...");
@@ -22,8 +11,8 @@ function start() {
     var heatingControl = new HeatingControl(
         new TargetTemperatureProvider(),
         new CurrentTemperatureProvider(),
-        new CallForHeatOnCommand(),
-        new CallForHeatOffCommand()
+        new CallForHeatCommandFactory.CallForHeatOnCommand(),
+        new CallForHeatCommandFactory.CallForHeatOffCommand()
     );
 
     heatingControl.onInterval();

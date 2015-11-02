@@ -1,14 +1,5 @@
-
-function RunLoop(intervalMs, callback) {
-    this.start = function() {
-        this.intervalTimer = setInterval(callback, intervalMs);
-    }
-
-    this.resetInterval = function() {
-        clearInterval(this.intervalTimer);
-        this.start();
-    }
-}
+var RunLoop = require('./RunLoop').RunLoop
+;
 
 function CurrentTemperatureProvider() {
     this.getCurrentTemperature = function() {
@@ -61,6 +52,7 @@ function start() {
         new CallForHeatOffCommand()
     );
 
+    heatingControl.onInterval();
     var runloop = new RunLoop(5000, function() {
         heatingControl.onInterval();
     });

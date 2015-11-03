@@ -13,6 +13,9 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     }
 
 /*
+    Hysteresis
+    ==========
+
     /|\ L1 - heating signal
      |
   ON |-------|---------|

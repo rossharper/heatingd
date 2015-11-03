@@ -1,7 +1,8 @@
 var fs = require('fs');
 
-var scheduleFile = "schedule";
-var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var DEFAULT_SCHEDULE_FILE = "defaultSchedule.json";
+var SCHEDULE_FILE = "schedule";
+var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 function TargetTemperatureProvider(programmeDataPath) {
 
@@ -29,15 +30,14 @@ function TargetTemperatureProvider(programmeDataPath) {
         return now.getTime() < end.getTime();
     }
 
-    function inComfortPeriod() {
+    function getDayOfWeek() {
         var now = new Date();
-        var dayOfWeekNum = now.getDay();
-        console.log("day: " + dayOfWeekNum);
-        var day = days[dayOfWeekNum];
-        console.log("day: " + day);
-        var periodsForToday = schedule.schedule[day].comfortPeriods;
+        return DAYS[now.getDay()];
+    }
+
+    function inComfortPeriod() {
+        var periodsForToday = schedule.schedule[getDayOfWeek()].comfortPeriods;
         for(var i = 0; i < periodsForToday.length; ++i) {
-            console.log(periodsForToday[i]);
             if(laterThanStart(periodsForToday[i]) && earlierThanEnd(periodsForToday[i])) {
                 return true;
             }
@@ -46,7 +46,7 @@ function TargetTemperatureProvider(programmeDataPath) {
     }
 
     function getScheduleDataFilePath() {
-        return programmeDataPath + "/" + scheduleFile;
+        return programmeDataPath + "/" + SCHEDULE_FILE;
     }
 
     function readSchedule() {
@@ -57,7 +57,7 @@ function TargetTemperatureProvider(programmeDataPath) {
         catch(e) {
             if (e.code === 'ENOENT') {
                 console.log("Schedule data file missing: " + scheduleFilePath);
-                return readScheduleFile('defaultSchedule.json');
+                return readScheduleFile(DEFAULT_SCHEDULE_FILE);
             } else {
                 throw e;
             }

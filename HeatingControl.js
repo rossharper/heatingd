@@ -11,15 +11,15 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     function shouldCallForHeat() {
         var currentLessThanTarget = false;
 
-        try {
+//        try {
             var targetTemp = targetTemperatureProvider.getTargetTemperature();
             var currentTemp = currentTemperatureProvider.getCurrentTemperature();
             console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
             currentLessThanTarget = (currentTemp < targetTemp); // TODO: hysteresis & switching differential
-        }
-        catch(e) {
-            console.error(e);
-        }
+//        }
+        // catch(e) {
+        //     console.error(e);
+        // }
         return currentLessThanTarget;
     }
 }

@@ -1,6 +1,6 @@
 var fs          = require('fs'),
-    Programme    = require('./Programme').Programme,
-    Chokidar = require('chokidar');
+    Programme   = require('./Programme').Programme,
+    FileWatcher = require('./FileWatcher');
 
 var DEFAULT_PROGRAMME_FILE = "defaultProgramme.json";
 var PROGRAMME_FILE = "programme.json";
@@ -44,20 +44,7 @@ function ProgrammeProvider(programmeDataPath) {
     }
 
     function watchProgrammeFile() {
-        var programmeDataFilePath = getProgrammeDataFilePath();
-        var watcher = Chokidar.watch(programmeDataFilePath);
-
-        var log = console.log.bind(console);
-
-        watcher
-            .on('error', function(error) { log('Error happened', error); })
-
-        watcher.on('ready', function() {
-            log("Watching " + programmeDataFilePath + " for changes...");
-            watcher
-                .on('add', onProgrammeFileChange)
-                .on('change', onProgrammeFileChange);
-            });
+        FileWatcher.watchFile(getProgrammeDataFilePath(), onProgrammeFileChange);
     }
 }
 

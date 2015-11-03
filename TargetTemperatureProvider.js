@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs          = require('fs'),
+    Schedule    = require('./Schedule').Schedule;
 
 var DEFAULT_SCHEDULE_FILE = "defaultSchedule.json";
 var SCHEDULE_FILE = "schedule";
@@ -6,7 +7,7 @@ var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturda
 
 function TargetTemperatureProvider(programmeDataPath) {
 
-    var schedule = readSchedule();
+    var schedule = readSchedule();//new Schedule(readSchedule());
 
     // TODO: watch for schedule file changes
 
@@ -15,30 +16,31 @@ function TargetTemperatureProvider(programmeDataPath) {
     }
 
     function getTargetTemperatureFromSchedule() {
-        return (inComfortPeriod()) ? schedule.comfortTemp : schedule.setbackTemp;
+        return (inComfortPeriod(new Date())) ? schedule.comfortTemp : schedule.setbackTemp;
     }
 
-    function laterThanStart(period) {
-        var now = new Date();
-        var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.startTime.substr(0,2)), parseInt(period.startTime.substr(3,2)), 0);
-        return now.getTime() > start.getTime();
+    function laterThanStart(date, period) {
+        var start = getDateFromTimeStr(date, period.startTime);
+        return date.getTime() > start.getTime();
     }
 
-    function earlierThanEnd(period) {
-        var now = new Date();
-        var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.endTime.substr(0,2)), parseInt(period.endTime.substr(3,2)), 0);
-        return now.getTime() < end.getTime();
+    function earlierThanEnd(date, period) {
+        var end = getDateFromTimeStr(date, period.endTime);
+        return date.getTime() < end.getTime();
     }
 
-    function getDayOfWeek() {
-        var now = new Date();
-        return DAYS[now.getDay()];
+    function getDateFromTimeStr(date, timeStr) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(timeStr.substr(0,2)), parseInt(timeStr.substr(3,2)), 0);
     }
 
-    function inComfortPeriod() {
-        var periodsForToday = schedule.schedule[getDayOfWeek()].comfortPeriods;
+    function getDayOfWeek(date) {
+        return DAYS[date.getDay()];
+    }
+
+    function inComfortPeriod(date) {
+        var periodsForToday = schedule.schedule[getDayOfWeek(date)].comfortPeriods;
         for(var i = 0; i < periodsForToday.length; ++i) {
-            if(laterThanStart(periodsForToday[i]) && earlierThanEnd(periodsForToday[i])) {
+            if(laterThanStart(date, periodsForToday[i]) && earlierThanEnd(date, periodsForToday[i])) {
                 return true;
             }
         }

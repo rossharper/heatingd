@@ -2,6 +2,7 @@
     "frostProtectTemp" : 5,
     "setbackTemp" : 10,
     "comfortTemp" : 20,
+    "heatingOn" : true,
     "schedule" : {
         "Sunday" : {
             "comfortPeriods" : [

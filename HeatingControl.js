@@ -4,9 +4,11 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     this.onInterval = function() {
         if(shouldCallForHeat()) {
             callForHeatOnCommand.execute();
+            callingForHeat = true;
         }
         else {
             callForHeatOffCommand.execute();
+            callingForHeat = false;
         }
     }
 
@@ -27,16 +29,25 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
     L1 - Output signal for heating
 */
 
+    var callingForHeat = false;
     function shouldCallForHeat() {
-        var currentLessThanTarget = false;
-
         var targetTemp = targetTemperatureProvider.getTargetTemperature();
         var currentTemp = currentTemperatureProvider.getCurrentTemperature();
-        console.log("Current temperature is " + currentTemp + "°C - Target temperature is " + targetTemp + "°C");
+        console.log("Current temperature is " + currentTemp + "°C - Setpoint is " + targetTemp + "°C");
 
-        currentLessThanTarget = (currentTemp < targetTemp); // TODO: hysteresis & switching differential
+        var lowPoint = targetTemp - (0.5 * SWITCHING_DIFFERENTIAL);
+        var highPoint = targetTemp + (0.5 * SWITCHING_DIFFERENTIAL);
 
-        return currentLessThanTarget;
+        if(currentTemp >= highPoint) {
+            console.log("Current temp above hysteresis high point");
+            return false;
+        }
+        if(currentTemp < lowPoint) {
+            console.log("Current temp below hysteresis low point");
+            return true;
+        }
+        console.log("Current temperature within switching differential. Continue calling for heat: " + callingForHeat);
+        return callingForHeat;
     }
 }
 

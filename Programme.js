@@ -1,14 +1,16 @@
 var DateUtil = require('./DateUtil');
 
 function Programme(programme) {
-    this.getComfortTemperature = function() {
-        return programme.comfortTemp;
-    }
-    this.getSetbackTemperature = function() {
-        return programme.setbackTemp;
-    }
     this.getCurrentTargetTemperature = function(date) {
-        return (inAnyComfortPeriodForDate(date)) ? this.getComfortTemperature() : this.getSetbackTemperature();
+        return getOverriddenTemperature() || getProgrammeTemperature(date);
+    }
+
+    function getOverriddenTemperature(date) {
+        return NaN;
+    }
+
+    function getProgrammeTemperature(date) {
+        return (inAnyComfortPeriodForDate(date)) ? programme.comfortTemp : programme.setbackTemp;
     }
 
     function laterThanComfortPeriodStart(date, period) {

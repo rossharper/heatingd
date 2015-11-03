@@ -19,28 +19,14 @@ function TargetTemperatureProvider(programmeDataPath) {
 
     function laterThanStart(period) {
         var now = new Date();
-        var startHourStr = period.startTime.substr(0,2);
-        var startMinStr = period.startTime.substr(3,2);
-        console.log(startHourStr);
-        console.log(startMinStr);
-        console.log(parseInt(startHourStr));
-        console.log(parseInt(startMinStr));
-        var startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.startTime.substr(0,2)), parseInt(period.startTime.substr(3,2)), 0);
-        console.log(startDate);
-        var startvalue = startDate.getTime();
-        var nowvalue = now.getTime();
-        console.log("start: " + startvalue);
-        console.log("now: " + nowvalue);
-        return nowvalue > startvalue;
+        var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.startTime.substr(0,2)), parseInt(period.startTime.substr(3,2)), 0);
+        return now.getTime() > start.getTime();
     }
 
     function earlierThanEnd(period) {
         var now = new Date();
-        var endvalue = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.endTime.substr(0,2)), parseInt(period.endTime.substr(3,2)), 0).getTime();
-        var nowvalue = now.getTime();
-        console.log("end: " + endvalue);
-        console.log("now: " + nowvalue);
-        return nowvalue < endvalue;
+        var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(period.endTime.substr(0,2)), parseInt(period.endTime.substr(3,2)), 0);
+        return now.getTime() < end.getTime();
     }
 
     function inComfortPeriod() {

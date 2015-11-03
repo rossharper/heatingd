@@ -16,17 +16,21 @@ function TargetTemperatureProvider(programmeDataPath) {
     }
 
     function getTargetTemperatureFromSchedule() {
-        return (inComfortPeriod(new Date())) ? schedule.comfortTemp : schedule.setbackTemp;
+        return (inAnyComfortPeriodForDate(new Date())) ? schedule.comfortTemp : schedule.setbackTemp;
     }
 
-    function laterThanStart(date, period) {
+    function laterThanComfortPeriodStart(date, period) {
         var start = getDateFromTimeStr(date, period.startTime);
-        return date.getTime() > start.getTime();
+        return isFirstDateBeforeSecondDate(start, date);
     }
 
-    function earlierThanEnd(date, period) {
+    function earlierThanComfortPeriodEnd(date, period) {
         var end = getDateFromTimeStr(date, period.endTime);
-        return date.getTime() < end.getTime();
+        return isFirstDateBeforeSecondDate(date, end);
+    }
+
+    function isFirstDateBeforeSecondDate(firstDate, secondDate) {
+        return firstDate.getTime() < secondDate.getTime();
     }
 
     function getDateFromTimeStr(date, timeStr) {
@@ -37,10 +41,14 @@ function TargetTemperatureProvider(programmeDataPath) {
         return DAYS[date.getDay()];
     }
 
-    function inComfortPeriod(date) {
+    function inComfortPeriod(date, comfortPeriod) {
+        return laterThanComfortPeriodStart(date, comfortPeriod) && earlierThanComfortPeriodEnd(date, comfortPeriod);
+    }
+
+    function inAnyComfortPeriodForDate(date) {
         var periodsForToday = schedule.schedule[getDayOfWeek(date)].comfortPeriods;
         for(var i = 0; i < periodsForToday.length; ++i) {
-            if(laterThanStart(date, periodsForToday[i]) && earlierThanEnd(date, periodsForToday[i])) {
+            if(inComfortPeriod(date, periodsForToday[i])) {
                 return true;
             }
         }

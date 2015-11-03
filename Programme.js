@@ -2,15 +2,30 @@ var DateUtil = require('./DateUtil');
 
 function Programme(programme) {
     this.getCurrentTargetTemperature = function(date) {
-        return getOverriddenTemperature() || getProgrammeTemperature(date);
+        return getOverriddenTemperature(date) || getProgrammeTemperature(date);
     }
 
     function getOverriddenTemperature(date) {
+        if(inOverridePeriod(date)) {
+            return getTemperatureForComfortState(programme.override.comfortState);
+        }
         return NaN;
     }
 
+    function inOverridePeriod(date) {
+        return programme.override && programme.override.until && beforeOverrideEnd(date, programme.override.until);
+    }
+
+    function beforeOverrideEnd(date, overrideEndTimeMs) {
+        return date.getTime() < overrideEndTimeMs;
+    }
+
     function getProgrammeTemperature(date) {
-        return (inAnyComfortPeriodForDate(date)) ? programme.comfortTemp : programme.setbackTemp;
+        return getTemperatureForComfortState(inAnyComfortPeriodForDate(date));
+    }
+
+    function getTemperatureForComfortState(comfortState) {
+        return comfortState ? programme.comfortTemp : programme.setbackTemp;
     }
 
     function laterThanComfortPeriodStart(date, period) {

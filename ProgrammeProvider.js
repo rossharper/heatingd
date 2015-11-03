@@ -1,13 +1,14 @@
 var fs          = require('fs'),
-    Programme    = require('./Programme').Programme;
+    Programme    = require('./Programme').Programme,
+    Chokidar = require('chokidar');
 
 var DEFAULT_PROGRAMME_FILE = "defaultProgramme.json";
 var PROGRAMME_FILE = "programme.json";
 
 function ProgrammeProvider(programmeDataPath) {
 
-    var programme = new Programme(readProgramme());
-    // todo: watch programme file for changes
+    var programme = new Programme(loadProgrammeFile());
+    watchProgrammeFile();
 
     this.getProgramme = function() {
         return programme;
@@ -22,7 +23,7 @@ function ProgrammeProvider(programmeDataPath) {
         return JSON.parse(file);
     }
 
-    function readProgramme() {
+    function loadProgrammeFile() {
         var programmeFilePath = getProgrammeDataFilePath();
         try{
             return readProgrammeFile(programmeFilePath);
@@ -35,6 +36,28 @@ function ProgrammeProvider(programmeDataPath) {
                 throw e;
             }
         }
+    }
+
+    function onProgrammeFileChange() {
+        console.log("Programme file changed. Reloading.");
+        programme = new Programme(loadProgrammeFile());
+    }
+
+    function watchProgrammeFile() {
+        var programmeDataFilePath = getProgrammeDataFilePath();
+        var watcher = Chokidar.watch(programmeDataFilePath);
+
+        var log = console.log.bind(console);
+
+        watcher
+            .on('error', function(error) { log('Error happened', error); })
+
+        watcher.on('ready', function() {
+            log("Watching " + programmeDataFilePath + " for changes...");
+            watcher
+                .on('add', onProgrammeFileChange)
+                .on('change', onProgrammeFileChange);
+            });
     }
 }
 

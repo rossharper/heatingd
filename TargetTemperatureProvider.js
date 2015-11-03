@@ -1,41 +1,40 @@
 var fs          = require('fs'),
-    Schedule    = require('./Schedule').Schedule;
+    Programme    = require('./Programme').Programme;
 
-var DEFAULT_SCHEDULE_FILE = "defaultSchedule.json";
-var SCHEDULE_FILE = "schedule";
-var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var DEFAULT_PROGRAMME_FILE = "defaultProgramme.json";
+var PROGRAMME_FILE = "programme.json";
 
 function TargetTemperatureProvider(programmeDataPath) {
 
-    var schedule = new Schedule(readSchedule());
+    var programme = new Programme(readProgramme());
 
     // TODO: watch for schedule file changes
 
     this.getTargetTemperature = function() {
-        return schedule.getCurrentTargetTemperature(new Date());
+        return programme.getCurrentTargetTemperature(new Date());
     }
 
-    function getScheduleDataFilePath() {
-        return programmeDataPath + "/" + SCHEDULE_FILE;
+    function getProgrammeDataFilePath() {
+        return programmeDataPath + "/" + PROGRAMME_FILE;
     }
 
-    function readSchedule() {
-        var scheduleFilePath = getScheduleDataFilePath();
+    function readProgramme() {
+        var programmeFilePath = getProgrammeDataFilePath();
         try{
-            return readScheduleFile(scheduleFilePath);
+            return readProgrammeFile(programmeFilePath);
         }
         catch(e) {
             if (e.code === 'ENOENT') {
-                console.log("Schedule data file missing: " + scheduleFilePath);
-                return readScheduleFile(DEFAULT_SCHEDULE_FILE);
+                console.log("Programme data file missing: " + programmeFilePath);
+                return readProgrammeFile(DEFAULT_PROGRAMME_FILE);
             } else {
                 throw e;
             }
         }
     }
 
-    function readScheduleFile(scheduleFilePath) {
-        var file = fs.readFileSync(scheduleFilePath, "utf8");
+    function readProgrammeFile(programmeFilePath) {
+        var file = fs.readFileSync(programmeFilePath, "utf8");
         return JSON.parse(file);
     }
 }

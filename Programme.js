@@ -1,10 +1,11 @@
 var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-function Schedule(schedule) {
+
+function Programme(programme) {
     this.getComfortTemperature = function() {
-        return schedule.comfortTemp;
+        return programme.comfortTemp;
     }
     this.getSetbackTemperature = function() {
-        return schedule.setbackTemp;
+        return programme.setbackTemp;
     }
     this.getCurrentTargetTemperature = function(date) {
         return (inAnyComfortPeriodForDate(date)) ? this.getComfortTemperature() : this.getSetbackTemperature();
@@ -37,7 +38,7 @@ function Schedule(schedule) {
     }
 
     function inAnyComfortPeriodForDate(date) {
-        var periodsForToday = schedule.schedule[getDayOfWeek(date)].comfortPeriods;
+        var periodsForToday = programme.schedule[getDayOfWeek(date)].comfortPeriods;
         for(var i = 0; i < periodsForToday.length; ++i) {
             if(inComfortPeriod(date, periodsForToday[i])) {
                 return true;
@@ -48,5 +49,5 @@ function Schedule(schedule) {
 }
 
 module.exports = {
-    Schedule : Schedule
+    Programme : Programme
 }

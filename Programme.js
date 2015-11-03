@@ -1,4 +1,4 @@
-var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var DateUtil = require('./DateUtil');
 
 function Programme(programme) {
     this.getComfortTemperature = function() {
@@ -12,25 +12,13 @@ function Programme(programme) {
     }
 
     function laterThanComfortPeriodStart(date, period) {
-        var start = getDateFromTimeStr(date, period.startTime);
-        return isFirstDateBeforeSecondDate(start, date);
+        var start = DateUtil.getDateFromTimeStr(date, period.startTime);
+        return DateUtil.isFirstDateBeforeSecondDate(start, date);
     }
 
     function earlierThanComfortPeriodEnd(date, period) {
-        var end = getDateFromTimeStr(date, period.endTime);
-        return isFirstDateBeforeSecondDate(date, end);
-    }
-
-    function isFirstDateBeforeSecondDate(firstDate, secondDate) {
-        return firstDate.getTime() < secondDate.getTime();
-    }
-
-    function getDateFromTimeStr(date, timeStr) {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(timeStr.substr(0,2)), parseInt(timeStr.substr(3,2)), 0);
-    }
-
-    function getDayOfWeek(date) {
-        return DAYS[date.getDay()];
+        var end = DateUtil.getDateFromTimeStr(date, period.endTime);
+        return DateUtil.isFirstDateBeforeSecondDate(date, end);
     }
 
     function inComfortPeriod(date, comfortPeriod) {
@@ -38,7 +26,7 @@ function Programme(programme) {
     }
 
     function inAnyComfortPeriodForDate(date) {
-        var periodsForToday = programme.schedule[getDayOfWeek(date)].comfortPeriods;
+        var periodsForToday = programme.schedule[DateUtil.getDayOfWeek(date)].comfortPeriods;
         for(var i = 0; i < periodsForToday.length; ++i) {
             if(inComfortPeriod(date, periodsForToday[i])) {
                 return true;

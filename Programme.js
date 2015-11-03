@@ -2,6 +2,9 @@ var DateUtil = require('./DateUtil');
 
 function Programme(programme) {
     this.getCurrentTargetTemperature = function(date) {
+        if(!programme.heatingOn) {
+            return programme.frostProtectTemp;
+        }
         return getOverriddenTemperature(date) || getProgrammeTemperature(date);
     }
 

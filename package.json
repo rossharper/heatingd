@@ -9,7 +9,6 @@
   },
   "author": "Ross Harper <ross@rossharper.net>",
   "dependencies": {
-    "chokidar": "^1.2.0",
     "heatingprogramme": "rossharper/heatingprogramme"
   },
   "license": "Apache-2.0"

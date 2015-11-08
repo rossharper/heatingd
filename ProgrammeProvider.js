@@ -1,5 +1,6 @@
 var fs          = require('fs'),
-    Programme   = require('./Programme').Programme,
+    //Programme   = require('./Programme').Programme,
+    Programme   = require('heatingprogramme').Programme,
     FileWatcher = require('./FileWatcher');
 
 var DEFAULT_PROGRAMME_FILE = "defaultProgramme.json";

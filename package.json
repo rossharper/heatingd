@@ -1,7 +1,7 @@
 {
   "name": "heatingd",
   "version": "1.0.0",
-  "description": "",
+  "description": "Heating control daemon.",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -9,6 +9,8 @@
   },
   "author": "Ross Harper <ross@rossharper.net>",
   "dependencies": {
-    "chokidar": "^1.2.0"
-  }
+    "chokidar": "^1.2.0",
+    "heatingprogramme": "rossharper/heatingprogramme"
+  },
+  "license": "Apache-2.0"
 }

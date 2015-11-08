@@ -46,15 +46,16 @@ function HeatingControl(targetTemperatureProvider, currentTemperatureProvider, c
             if(currentTemp >= highPoint) {
                 console.log("Current temp above hysteresis high point");
                 callback(false);
+                return;
             }
             if(currentTemp < lowPoint) {
                 console.log("Current temp below hysteresis low point");
                 callback(true);
+                return;
             }
             console.log("Current temperature within switching differential. Continue calling for heat: " + callingForHeat);
             callback(callingForHeat);
         });
-
     }
 }
 

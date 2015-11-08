@@ -1,4 +1,4 @@
-var ProgrammeProvider   = require('./ProgrammeProvider').ProgrammeProvider;
+var ProgrammeProvider   = require('heatingprogramme').ProgrammeProvider;
 
 function TargetTemperatureProvider(programmeDataPath) {
 

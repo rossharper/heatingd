@@ -1,6 +1,7 @@
 var RunLoop = require('./RunLoop').RunLoop,
+    ProgrammeFileLoader = require('heatingprogramme').ProgrammeFileLoader,
+    ProgrammeChangeWatcher = require('heatingprogramme').ProgrammeChangeWatcher,
     CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider,
-    TargetTemperatureProvider = require('./TargetTemperatureProvider').TargetTemperatureProvider,
     HeatingControl = require('./HeatingControl').HeatingControl
     CallForHeatCommandFactory = require('./CallForHeatCommandFactory')
 ;
@@ -62,18 +63,26 @@ function start(args) {
     console.log("Monitoring temperatures from sensor path: " + args.sensorDataPath);
     console.log("Monitoring programme/schedule data from path: " + args.programmeDataPath);
 
-    var heatingControl = new HeatingControl(
-        new TargetTemperatureProvider(args.programmeDataPath),
-        new CurrentTemperatureProvider(args.sensorDataPath),
-        new CallForHeatCommandFactory.CallForHeatOnCommand(),
-        new CallForHeatCommandFactory.CallForHeatOffCommand()
-    );
+    function onProgrammeLoaded(programme) {
+        var heatingControl = new HeatingControl(
+            programme,
+            new CurrentTemperatureProvider(args.sensorDataPath),
+            new CallForHeatCommandFactory.CallForHeatOnCommand(),
+            new CallForHeatCommandFactory.CallForHeatOffCommand()
+        );
 
-    heatingControl.onInterval();
-    var runloop = new RunLoop(args.updateIntervalSeconds * 1000, function() {
+        ProgrammeChangeWatcher.watchForChanges(args.programmeDataPath, function(updatedProgramme) {
+            heatingControl.onProgrammeChanged(updatedProgramme);
+        });
+
         heatingControl.onInterval();
-    });
-    runloop.start();
+        var runloop = new RunLoop(args.updateIntervalSeconds * 1000, function() {
+            heatingControl.onInterval();
+        });
+        runloop.start();
+    }
+
+    ProgrammeFileLoader.loadProgramme(args.programmeDataPath, onProgrammeLoaded);
 }
 
 parseArgs();

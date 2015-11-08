@@ -4,8 +4,10 @@ function TargetTemperatureProvider(programmeDataPath) {
 
     var programmeProvider = new ProgrammeProvider(programmeDataPath);
 
-    this.getTargetTemperature = function() {
-        return programmeProvider.getProgramme().getCurrentTargetTemperature(new Date());
+    this.getTargetTemperature = function(callback) {
+        programmeProvider.getProgramme(function(programme) {
+            callback(programme.getCurrentTargetTemperature(new Date()));
+        });
     }
 }
 

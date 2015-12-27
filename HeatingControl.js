@@ -2,13 +2,14 @@ var SWITCHING_DIFFERENTIAL = 1.00;
 
 function HeatingControl(programme, currentTemperatureProvider, callForHeatOnCommand, callForHeatOffCommand) {
 
-    var callingForHeat = false;
+    var callingForHeat = undefined;
 
     this.onInterval = function() {
         update();
     }
 
     this.onProgrammeChanged = function(updatedProgramme) {
+        callingForHeat = undefined;
         programme = updatedProgramme;
         update();
     }
@@ -64,7 +65,7 @@ function HeatingControl(programme, currentTemperatureProvider, callForHeatOnComm
             return true;
         }
         console.log("Current temperature within switching differential. Continue calling for heat: " + callingForHeat);
-        return callingForHeat;
+        return (callingForHeat == undefined) ? true : callingForHeat;
     }
 }
 

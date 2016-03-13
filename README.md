@@ -43,20 +43,19 @@ The heating daemon implements a hysteresis algorithm to prevent thrashing about 
      -programme    path at which programme/schedule data can be found
                    (default: /var/lib/homecontrol/programdata)
 
+# Run in background
 
-# Install
+To run with defaults in forever
+
+    ./start.sh
+
+# Install as startup daemon
 
     sudo ./installDaemon.sh
 
 This script will set up the app to run at startup using forever-service. The service will run as the user 'pi'.
 
 Note: the daemon defaults are used in this case.
-
-# Run standalone
-
-To run with defaults in forever
-
-    ./start.sh
 
 # Dependencies
 

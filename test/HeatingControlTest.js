@@ -69,4 +69,12 @@ describe("Heating Control", function() {
     expect(onCommandSpy).to.not.have.been.called();
     expect(offCommandSpy).to.have.been.called();
   });
+
+  // current temp in switching diff (falling)
+
+  // current temp in switching diff (rising)
+
+  // current temp in switching diff (unknown)
+
+  // on programme changed
 });

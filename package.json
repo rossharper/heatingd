@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "Heating control daemon.",
   "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
   "repository": {
     "type": "git",
     "url": "https://rossharper@github.com/rossharper/heatingd.git"
   },
   "author": "Ross Harper <ross@rossharper.net>",
   "dependencies": {
-    "heatingprogramme": "rossharper/heatingprogramme"
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "heatingprogramme": "rossharper/heatingprogramme",
+    "mocha": "^2.5.3"
   },
   "license": "Apache-2.0"
 }

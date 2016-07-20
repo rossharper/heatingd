@@ -6,27 +6,44 @@ var HeatingControl = require('../HeatingControl').HeatingControl;
 chai.use(spies);
 
 describe("Heating Control", function() {
-  it("should execute call for heat command on update when current target temperature above current temperature", function() {
-    // arrange
-    var programmeDouble = {
+
+  function programmeDoubleWithTargetTemperature(targetTemp) {
+    return {
       getCurrentTargetTemperature : function() {
-        return 20.0;
+        return targetTemp;
       }
     };
-    var temperatureProviderDouble = {
+  }
+
+  function temperatureProviderDoubleWithCurrentTemperature(currentTemp) {
+    return {
       getCurrentTemperature : function() {
-        return 18.2;
+        return currentTemp;
       }
-    }
-    var onCommandDouble = {
-      execute : function() {}
-    }
-    var offCommandDouble = {
-      execute : function() {}
-    }
-    var onCommandSpy = chai.spy.on(onCommandDouble, 'execute');
-    var offCommandSpy = chai.spy.on(offCommandDouble, 'execute');
-    var heatingControl = new HeatingControl(programmeDouble, temperatureProviderDouble, onCommandDouble, offCommandDouble);
+    };
+  }
+
+  var onCommandDouble = {
+    execute : function() {}
+  }
+  var offCommandDouble = {
+    execute : function() {}
+  }
+  var onCommandSpy;
+  var offCommandSpy;
+
+  beforeEach(function() {
+    onCommandSpy = chai.spy.on(onCommandDouble, 'execute');
+    offCommandSpy = chai.spy.on(offCommandDouble, 'execute');
+  });
+
+  it("should execute call for heat ON command on update when target temperature above current temperature", function() {
+    // arrange
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDoubleWithCurrentTemperature(18.2),
+      onCommandDouble,
+      offCommandDouble);
 
     // act
     heatingControl.onInterval();
@@ -34,5 +51,22 @@ describe("Heating Control", function() {
     // assert
     expect(onCommandSpy).to.have.been.called();
     expect(offCommandSpy).to.not.have.been.called();
+  });
+
+  it("should execute call for heat OFF command on update when target temperature below current temperature", function() {
+    // arrange
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDoubleWithCurrentTemperature(21.0),
+      onCommandDouble,
+      offCommandDouble
+    );
+
+    // act
+    heatingControl.onInterval();
+
+    // assert
+    expect(onCommandSpy).to.not.have.been.called();
+    expect(offCommandSpy).to.have.been.called();
   });
 });

@@ -9,7 +9,7 @@ The daemon will then read temperature data periodically, as defined by the inter
 The heating daemon calls for heat (or cancels a call for heat) via the `callforheat` command provided by [boilercontrol](http://github.com/rossharper/boilercontrol).
 
 The heating daemon implements a hysteresis algorithm to prevent thrashing about the setpoint. The switching differential is 1°C.
-
+ 
     Hysteresis
     ==========
 

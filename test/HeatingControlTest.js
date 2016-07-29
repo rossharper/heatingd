@@ -37,7 +37,7 @@ describe("Heating Control", function() {
     offCommandSpy = chai.spy.on(offCommandDouble, 'execute');
   });
 
-  it("should execute call for heat ON command on interval when target temperature above current temperature", function() {
+  it("should execute ON command on initial interval when target temperature above current temperature", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
@@ -53,7 +53,7 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
-  it("should execute call for heat OFF command on interval when target temperature below current temperature", function() {
+  it("should execute OFF command on initial interval when target temperature below current temperature", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
@@ -70,7 +70,7 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.have.been.called();
   });
 
-  it("should execute call for heat ON command on first interval when target temperature in switching differential above target", function() {
+  it("should execute ON command on initial interval when current temperature in switching differential above target", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
@@ -86,7 +86,7 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
-  it("should execute call for heat ON command on first interval when target temperature in switching differential above target", function() {
+  it("should execute ON command on initial interval when current temperature in switching differential below target", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
@@ -102,7 +102,7 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
-  it("should execute call for heat ON command on subsequent interval when target temperature in switching differential above target", function() {
+  it("should execute ON command on subsequent interval when target temperature in switching differential above target", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),

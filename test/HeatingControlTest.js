@@ -142,7 +142,8 @@ describe("Heating Control", function() {
 
       heatingControl.onInterval();
 
-      expect(offCommandSpy).to.have.been.called();
+      expect(offCommandSpy).to.have.been.called.once();
+      expect(onCommandSpy).to.have.been.called.once();
   });
 
   it("should execute ON command on subsequent interval when current temperature falling and below switching differential low point", function() {
@@ -162,7 +163,8 @@ describe("Heating Control", function() {
 
       heatingControl.onInterval();
 
-      expect(onCommandSpy).to.have.been.called();
+      expect(offCommandSpy).to.have.been.called.once();
+      expect(onCommandSpy).to.have.been.called.once();
   });
 
   it("should execute OFF command on subsequent interval when current temperature falling into switching differential", function() {
@@ -183,6 +185,7 @@ describe("Heating Control", function() {
       heatingControl.onInterval();
 
       expect(offCommandSpy).to.have.been.called.twice();
+      expect(onCommandSpy).to.have.not.been.called();
   });
 
   it("should execute OFF command on subsequent interval when current temperature falling and above switching differential high point", function() {
@@ -203,6 +206,7 @@ describe("Heating Control", function() {
       heatingControl.onInterval();
 
       expect(offCommandSpy).to.have.been.called.twice();
+      expect(onCommandSpy).to.have.not.been.called();
   });
 
   it("should execute ON command on progamme changed when current temperature below switching differential low point", function() {

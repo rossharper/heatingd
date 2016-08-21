@@ -185,6 +185,26 @@ describe("Heating Control", function() {
       expect(offCommandSpy).to.have.been.called.twice();
   });
 
+  it("should execute OFF command on subsequent interval when current temperature falling and above switching differential high point", function() {
+    // arrange
+    var temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(22.00)
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDouble,
+      onCommandDouble,
+      offCommandDouble);
+
+      // act
+      heatingControl.onInterval();
+      temperatureProviderDouble.currentTemp = 21.00;
+
+      expect(offCommandSpy).to.have.been.called();
+
+      heatingControl.onInterval();
+
+      expect(offCommandSpy).to.have.been.called.twice();
+  });
+
   /*
                  | below h low | in h | above h high |
     init         |       X     |   X  |      X       |

@@ -17,8 +17,9 @@ describe("Heating Control", function() {
 
   function temperatureProviderDoubleWithCurrentTemperature(currentTemp) {
     return {
+      currentTemp : currentTemp,
       getCurrentTemperature : function() {
-        return currentTemp;
+        return this.currentTemp;
       }
     };
   }
@@ -37,11 +38,11 @@ describe("Heating Control", function() {
     offCommandSpy = chai.spy.on(offCommandDouble, 'execute');
   });
 
-  it("should execute ON command on initial interval when target temperature above current temperature", function() {
+  it("should execute ON command on initial interval when current temperature below switching differential high point", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
-      temperatureProviderDoubleWithCurrentTemperature(19.4),
+      temperatureProviderDoubleWithCurrentTemperature(20.49),
       onCommandDouble,
       offCommandDouble);
 
@@ -53,7 +54,7 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
-  it("should execute OFF command on initial interval when target temperature below current temperature", function() {
+  it("should execute OFF command on initial interval when current temperature above switching differential high point", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
@@ -70,11 +71,11 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.have.been.called();
   });
 
-  it("should execute ON command on initial interval when current temperature in switching differential above target", function() {
+  it("should execute ON command on initial interval when current temperature below switching differential low point", function() {
     // arrange
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
-      temperatureProviderDoubleWithCurrentTemperature(20.49),
+      temperatureProviderDoubleWithCurrentTemperature(19.49),
       onCommandDouble,
       offCommandDouble);
 
@@ -86,38 +87,32 @@ describe("Heating Control", function() {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
-  it("should execute ON command on initial interval when current temperature in switching differential below target", function() {
+  it("should execute ON command on subsequent interval when current temperature rising but below switching differential low point", function() {
     // arrange
+    var temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(19.00)
     var heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
-      temperatureProviderDoubleWithCurrentTemperature(19.50),
+      temperatureProviderDouble,
       onCommandDouble,
       offCommandDouble);
 
     // act
     heatingControl.onInterval();
-
-    // assert
-    expect(onCommandSpy).to.have.been.called();
-    expect(offCommandSpy).to.not.have.been.called();
-  });
-
-  it("should execute ON command on subsequent interval when target temperature in switching differential above target", function() {
-    // arrange
-    var heatingControl = new HeatingControl(
-      programmeDoubleWithTargetTemperature(20.0),
-      temperatureProviderDoubleWithCurrentTemperature(19.50),
-      onCommandDouble,
-      offCommandDouble);
-
-    // act
-    heatingControl.onInterval();
+    temperatureProviderDouble.currentTemp = 19.49;
     heatingControl.onInterval();
 
     // assert
     expect(onCommandSpy).to.have.been.called.twice;
     expect(offCommandSpy).to.not.have.been.called();
   });
+
+  /*
+                 | below h low | in h | above h high |
+    init         |       X     |   X  |      X       |
+    subs rising  |       X     |      |              |
+    subs falling |             |      |              |
+    prog changed |             |      |              |
+  */
 
   // current temp in switching diff (rising)
 

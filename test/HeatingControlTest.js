@@ -249,17 +249,23 @@ describe("Heating Control", function() {
       expect(onCommandSpy).to.have.been.called.once();
   });
 
-  /*
-                 | below h low | in h | above h high |
-    init         |       X     |   X  |      X       |
-    subs rising  |       X     |   X  |      X       |
-    subs falling |       X     |   X  |      X       |
-    prog changed |       X     |   X  |              |
-  */
+  it("should execute OFF command on progamme changed when current temperature above switching differential high point", function() {
+    // arrange
+    var temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(20.00)
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(21.0),
+      temperatureProviderDouble,
+      onCommandDouble,
+      offCommandDouble);
 
-  // current temp in switching diff (rising)
+      // act
+      heatingControl.onInterval();
 
-  // current temp in switching diff (falling)
+      expect(onCommandSpy).to.have.been.called();
 
-  // on programme changed
+      heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(19.00));
+
+      expect(offCommandSpy).to.have.been.called.once();
+      expect(onCommandSpy).to.have.been.called.once();
+  });
 });

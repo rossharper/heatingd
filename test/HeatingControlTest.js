@@ -165,11 +165,31 @@ describe("Heating Control", function() {
       expect(onCommandSpy).to.have.been.called();
   });
 
+  it("should execute OFF command on subsequent interval when current temperature falling into switching differential", function() {
+    // arrange
+    var temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(21.00)
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDouble,
+      onCommandDouble,
+      offCommandDouble);
+
+      // act
+      heatingControl.onInterval();
+      temperatureProviderDouble.currentTemp = 20.00;
+
+      expect(offCommandSpy).to.have.been.called();
+
+      heatingControl.onInterval();
+
+      expect(offCommandSpy).to.have.been.called.twice();
+  });
+
   /*
                  | below h low | in h | above h high |
     init         |       X     |   X  |      X       |
     subs rising  |       X     |   X  |      X       |
-    subs falling |       X     |      |              |
+    subs falling |       X     |   X  |              |
     prog changed |             |      |              |
   */
 

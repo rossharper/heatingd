@@ -145,11 +145,31 @@ describe("Heating Control", function() {
       expect(offCommandSpy).to.have.been.called();
   });
 
+  it("should execute ON command on subsequent interval when current temperature falling and below switching differential low point", function() {
+    // arrange
+    var temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(21.00)
+    var heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDouble,
+      onCommandDouble,
+      offCommandDouble);
+
+      // act
+      heatingControl.onInterval();
+      temperatureProviderDouble.currentTemp = 19.49;
+
+      expect(offCommandSpy).to.have.been.called();
+
+      heatingControl.onInterval();
+
+      expect(onCommandSpy).to.have.been.called();
+  });
+
   /*
                  | below h low | in h | above h high |
     init         |       X     |   X  |      X       |
-    subs rising  |       X     |   X  |              |
-    subs falling |             |      |              |
+    subs rising  |       X     |   X  |      X       |
+    subs falling |       X     |      |              |
     prog changed |             |      |              |
   */
 

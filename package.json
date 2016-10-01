@@ -12,10 +12,12 @@
   },
   "author": "Ross Harper <ross@rossharper.net>",
   "dependencies": {
+    "heatingprogramme": "rossharper/heatingprogramme"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
-    "heatingprogramme": "rossharper/heatingprogramme",
     "mocha": "^2.5.3"
-  },
+  }
   "license": "Apache-2.0"
 }

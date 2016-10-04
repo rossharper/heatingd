@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec && open coverage/lcov-report/index.html"
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec && open coverage/lcov-report/index.html",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -18,8 +19,17 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
+    "eslint": "^3.7.1",
+    "eslint-config-iplayer-es6": "^3.0.1",
+    "eslint-plugin-mocha": "^4.6.0",
     "istanbul": "^0.4.5",
     "mocha": "^2.5.3"
+  },
+  "eslintConfig": {
+    "extends": "iplayer-es6",
+    "rules": {
+      "no-console": "off"
+    }
   },
   "license": "Apache-2.0"
 }

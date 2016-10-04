@@ -1,14 +1,16 @@
-function RunLoop(intervalMs, callback) {
-    this.start = function() {
-        this.intervalTimer = setInterval(callback, intervalMs);
-    }
+'use strict';
 
-    this.resetInterval = function() {
-        clearInterval(this.intervalTimer);
-        this.start();
-    }
+function RunLoop(intervalMs, callback) {
+  this.start = function () {
+    this.intervalTimer = setInterval(callback, intervalMs);
+  };
+
+  this.resetInterval = function () {
+    clearInterval(this.intervalTimer);
+    this.start();
+  };
 }
 
 module.exports = {
-    RunLoop : RunLoop
-}
+  RunLoop: RunLoop
+};

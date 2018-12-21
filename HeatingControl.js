@@ -2,7 +2,7 @@
 
 const SWITCHING_DIFFERENTIAL = 1.00;
 
-function HeatingControl(programme, currentTemperatureProvider, callForHeatOnCommand, callForHeatOffCommand, callingForHeatRepository) {
+function HeatingControl(programme, currentTemperatureProvider, callingForHeatRepository) {
 
   this.onInterval = function () {
     update();
@@ -16,10 +16,8 @@ function HeatingControl(programme, currentTemperatureProvider, callForHeatOnComm
 
   function update() {
     if (shouldCallForHeat()) {
-      callForHeatOnCommand.execute();
       callingForHeatRepository.setCallingForHeat(true);
     } else {
-      callForHeatOffCommand.execute();
       callingForHeatRepository.setCallingForHeat(false);
     }
   }

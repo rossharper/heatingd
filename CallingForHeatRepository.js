@@ -1,6 +1,6 @@
 'use strict';
 
-function callingForHeatRepository(initialCallForHeat) {
+function callingForHeatRepository(initialCallForHeat, callForHeatOnCommand, callForHeatOffCommand) {
     return {
         _callingForHeat: initialCallForHeat,
 
@@ -10,6 +10,11 @@ function callingForHeatRepository(initialCallForHeat) {
 
         setCallingForHeat: function (callingForHeat) {
             this._callingForHeat = (callingForHeat === true);
+            if (this._callingForHeat) {
+                callForHeatOnCommand.execute();
+            } else {
+                callForHeatOffCommand.execute();
+            }
         }
     };
 }

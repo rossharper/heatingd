@@ -68,9 +68,7 @@ function start(args) {
     const heatingControl = new HeatingControl(
       programme,
       new CurrentTemperatureProvider(args.sensorDataPath),
-      new CallForHeatCommandFactory.CallForHeatOnCommand(),
-      new CallForHeatCommandFactory.CallForHeatOffCommand(),
-      new CallingForHeatRepository.CallingForHeatRepository()
+      new CallingForHeatRepository.CallingForHeatRepository(false, new CallForHeatCommandFactory.CallForHeatOnCommand(), new CallForHeatCommandFactory.CallForHeatOffCommand())
     );
 
     ProgrammeChangeWatcher.watchForChanges(args.programmeDataPath, (updatedProgramme) => {

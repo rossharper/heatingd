@@ -26,6 +26,20 @@ describe('Heating Control', () => {
     };
   }
 
+  function callingForHeatRepositoryDouble(initialCallForHeat) {
+    return {
+      _callingForHeat: initialCallForHeat,
+
+      getCallingForHeat: function () {
+        return this._callingForHeat;
+      },
+
+      setCallingForHeat: function (callingForHeat) {
+        this._callingForHeat = (callingForHeat === true);
+      }
+    };
+  }
+
   const onCommandDouble = {
     execute: function () {}
   };
@@ -40,13 +54,15 @@ describe('Heating Control', () => {
     offCommandSpy = chai.spy.on(offCommandDouble, 'execute');
   });
 
-  it('should execute ON command on initial interval when current temperature below switching differential high point', () => {
+  it('should execute ON command on initial interval when current temperature below switching differential high point and previously calling for heat', () => {
     // arrange
     const heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDoubleWithCurrentTemperature(20.49),
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(true)
+    );
 
     // act
     heatingControl.onInterval();
@@ -56,13 +72,32 @@ describe('Heating Control', () => {
     expect(offCommandSpy).to.not.have.been.called();
   });
 
+  it('should execute OFF command on initial interval when current temperature below switching differential high point and previously NOT calling for heat', () => {
+    // arrange
+    const heatingControl = new HeatingControl(
+      programmeDoubleWithTargetTemperature(20.0),
+      temperatureProviderDoubleWithCurrentTemperature(20.49),
+      onCommandDouble,
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
+
+    // act
+    heatingControl.onInterval();
+
+    // assert
+    expect(onCommandSpy).to.not.have.been.called();
+    expect(offCommandSpy).to.have.been.called();
+  });
+
   it('should execute OFF command on initial interval when current temperature above switching differential high point', () => {
     // arrange
     const heatingControl = new HeatingControl(
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDoubleWithCurrentTemperature(20.5),
       onCommandDouble,
-      offCommandDouble
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
     );
 
     // act
@@ -79,7 +114,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDoubleWithCurrentTemperature(19.49),
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -96,7 +133,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -115,7 +154,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -134,18 +175,20 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
     temperatureProviderDouble.currentTemp = 20.50;
 
-    expect(onCommandSpy).to.have.been.called();
+    expect(offCommandSpy).to.have.been.called();
 
     heatingControl.onInterval();
 
-    expect(offCommandSpy).to.have.been.called.once();
-    expect(onCommandSpy).to.have.been.called.once();
+    expect(offCommandSpy).to.have.been.called.twice;
+    expect(onCommandSpy).to.not.have.been.called();
   });
 
   it('should execute ON command on subsequent interval when current temperature falling and below switching differential low point', () => {
@@ -155,7 +198,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -176,7 +221,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -197,7 +244,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(20.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -218,7 +267,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(19.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -238,7 +289,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(19.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();
@@ -258,7 +311,9 @@ describe('Heating Control', () => {
       programmeDoubleWithTargetTemperature(21.0),
       temperatureProviderDouble,
       onCommandDouble,
-      offCommandDouble);
+      offCommandDouble,
+      callingForHeatRepositoryDouble(false)
+    );
 
     // act
     heatingControl.onInterval();

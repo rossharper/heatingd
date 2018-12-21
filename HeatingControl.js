@@ -2,16 +2,14 @@
 
 const SWITCHING_DIFFERENTIAL = 1.00;
 
-function HeatingControl(programme, currentTemperatureProvider, callForHeatOnCommand, callForHeatOffCommand) {
-
-  let callingForHeat = undefined;
+function HeatingControl(programme, currentTemperatureProvider, callForHeatOnCommand, callForHeatOffCommand, callingForHeatRepository) {
 
   this.onInterval = function () {
     update();
   };
 
   this.onProgrammeChanged = function (updatedProgramme) {
-    callingForHeat = undefined;
+    callingForHeatRepository.setCallingForHeat(!callingForHeatRepository.getCallingForHeat());
     programme = updatedProgramme;
     update();
   };
@@ -19,10 +17,10 @@ function HeatingControl(programme, currentTemperatureProvider, callForHeatOnComm
   function update() {
     if (shouldCallForHeat()) {
       callForHeatOnCommand.execute();
-      callingForHeat = true;
+      callingForHeatRepository.setCallingForHeat(true);
     } else {
       callForHeatOffCommand.execute();
-      callingForHeat = false;
+      callingForHeatRepository.setCallingForHeat(false);
     }
   }
 
@@ -65,8 +63,8 @@ function HeatingControl(programme, currentTemperatureProvider, callForHeatOnComm
       console.log('Current temp below hysteresis low point');
       return true;
     }
-    console.log(`Current temperature within switching differential. Continue calling for heat: ${callingForHeat}`);
-    return (callingForHeat === undefined) ? true : callingForHeat;
+    console.log(`Current temperature within switching differential. Continue calling for heat: ${callingForHeatRepository.getCallingForHeat()}`);
+    return callingForHeatRepository.getCallingForHeat();
   }
 }
 

@@ -6,8 +6,8 @@ const ProgrammeChangeWatcher = require('heatingprogramme').ProgrammeChangeWatche
 const CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider;
 const HeatingControl = require('./HeatingControl').HeatingControl;
 const CallForHeatCommandFactory = require('./CallForHeatCommandFactory');
-const CallingForHeatRepository = require('./CallingForHeatRepository.js');
-const CallingForHeatFileWriter = require('./CallingForHeatFileWriter');
+const CallingForHeatRepository = require('./CallingForHeatRepository.js').CallingForHeatRepository;
+const CallingForHeatFileWriter = require('./CallingForHeatFileWriter').CallingForHeatFileWriter;
 
 const DEFAULTS = {
   INTERVAL_SECONDS: 30,
@@ -70,7 +70,7 @@ function start(args) {
     const heatingControl = new HeatingControl(
       programme,
       new CurrentTemperatureProvider(args.sensorDataPath),
-      new CallingForHeatRepository.CallingForHeatRepository(
+      new CallingForHeatRepository(
         false,
         new CallingForHeatFileWriter(args.programmeDataPath),
         new CallForHeatCommandFactory.CallForHeatOnCommand(),

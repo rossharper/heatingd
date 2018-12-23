@@ -6,6 +6,8 @@ const ProgrammeChangeWatcher = require('heatingprogramme').ProgrammeChangeWatche
 const CurrentTemperatureProvider = require('./CurrentTemperatureProvider').CurrentTemperatureProvider;
 const HeatingControl = require('./HeatingControl').HeatingControl;
 const CallForHeatCommandFactory = require('./CallForHeatCommandFactory');
+const CallingForHeatRepository = require('./CallingForHeatRepository.js');
+const CallingForHeatFileWriter = require('./CallingForHeatFileWriter');
 
 const DEFAULTS = {
   INTERVAL_SECONDS: 30,
@@ -62,13 +64,17 @@ function start(args) {
   console.log('Monitoring temperature every " + args.updateIntervalSeconds + " seconds.');
   console.log('Monitoring temperatures from sensor path: ' + args.sensorDataPath);
   console.log('Monitoring programme/schedule data from path: ' + args.programmeDataPath);
+  console.log('Writing call for heat flag to: ' + args.programmeDataPath);
 
   function onProgrammeLoaded(programme) {
     const heatingControl = new HeatingControl(
       programme,
       new CurrentTemperatureProvider(args.sensorDataPath),
-      new CallForHeatCommandFactory.CallForHeatOnCommand(),
-      new CallForHeatCommandFactory.CallForHeatOffCommand()
+      new CallingForHeatRepository.CallingForHeatRepository(
+        false,
+        new CallingForHeatFileWriter(args.programmeDataPath),
+        new CallForHeatCommandFactory.CallForHeatOnCommand(),
+        new CallForHeatCommandFactory.CallForHeatOffCommand())
     );
 
     ProgrammeChangeWatcher.watchForChanges(args.programmeDataPath, (updatedProgramme) => {

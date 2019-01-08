@@ -59,12 +59,12 @@ function parseArgs() {
 }
 
 function start(args) {
-  console.log('Starting heatingd...');
+  console.log(`${new Date().toISOString()} Starting heatingd...`);
 
-  console.log('Monitoring temperature every " + args.updateIntervalSeconds + " seconds.');
-  console.log('Monitoring temperatures from sensor path: ' + args.sensorDataPath);
-  console.log('Monitoring programme/schedule data from path: ' + args.programmeDataPath);
-  console.log('Writing call for heat flag to: ' + args.programmeDataPath);
+  console.log(`${new Date().toISOString()} Monitoring temperature every ${args.updateIntervalSeconds} seconds.`);
+  console.log(`${new Date().toISOString()} Monitoring temperatures from sensor path: ${args.sensorDataPath}`);
+  console.log(`${new Date().toISOString()} Monitoring programme/schedule data from path: ${args.programmeDataPath}`);
+  console.log(`${new Date().toISOString()} Writing call for heat flag to: ${args.programmeDataPath}`);
 
   function onProgrammeLoaded(programme) {
     const heatingControl = new HeatingControl(

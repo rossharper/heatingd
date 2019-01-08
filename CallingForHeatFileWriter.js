@@ -20,7 +20,7 @@ function callingForHeatFileWriter(fileLocationPath) {
         try {
             fs.writeFileSync(filePath, value, 'utf8');
         } catch (e) {
-            console.log(`Failed to write ${filePath}. Exception: ${e}`);
+            console.log(`${new Date().toISOString()} Failed to write ${filePath}. Exception: ${e}`);
         }
     }
 }

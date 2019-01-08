@@ -48,20 +48,20 @@ function HeatingControl(programme, currentTemperatureProvider, callingForHeatRep
   function shouldCallForHeat() {
     const targetTemp = getTargetTemperature();
     const currentTemp = currentTemperatureProvider.getCurrentTemperature();
-    console.log(`Current temperature is ${currentTemp}°C - Setpoint is ${targetTemp}°C`);
+    console.log(`${new Date().toISOString()} Current temperature is ${currentTemp}°C - Setpoint is ${targetTemp}°C`);
 
     const lowPoint = targetTemp - (0.5 * SWITCHING_DIFFERENTIAL);
     const highPoint = targetTemp + (0.5 * SWITCHING_DIFFERENTIAL);
 
     if (currentTemp >= highPoint) {
-      console.log('Current temp above hysteresis high point');
+      console.log(`${new Date().toISOString()} Current temp above hysteresis high point`);
       return false;
     }
     if (currentTemp < lowPoint) {
-      console.log('Current temp below hysteresis low point');
+      console.log(`${new Date().toISOString()} Current temp below hysteresis low point`);
       return true;
     }
-    console.log(`Current temperature within switching differential. Continue calling for heat: ${callingForHeatRepository.getCallingForHeat()}`);
+    console.log(`${new Date().toISOString()} Current temperature within switching differential. Continue calling for heat: ${callingForHeatRepository.getCallingForHeat()}`);
     return callingForHeatRepository.getCallingForHeat();
   }
 }

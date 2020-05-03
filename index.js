@@ -88,8 +88,22 @@ function start(args) {
     runloop.start();
   }
 
-  ProgrammeFileLoader.loadProgramme(args.programmeDataPath, onProgrammeLoaded);
+  ensureProgrammeDataDirectoryExists(args.programmeDataPath, (err) => {
+    if (err) {
+      process.exit();
+    } else {
+      ProgrammeFileLoader.loadProgramme(args.programmeDataPath, onProgrammeLoaded);
+    }
+  });
 }
 
-parseArgs();
+function ensureProgrammeDataDirectoryExists(path, callback) {
+  fs.mkdir(path, { recursive: true }, (err) => {
+    if (err) {
+      if (err.code === 'EEXIST') callback(null); // ignore the error if the folder already exists
+      else callback(err); // something else went wrong
+    } else callback(null); // successfully created folder
+  });
+}
+
 start(parseArgs());

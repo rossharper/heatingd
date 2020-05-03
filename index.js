@@ -8,6 +8,7 @@ const HeatingControl = require('./HeatingControl').HeatingControl;
 const CallForHeatCommandFactory = require('./CallForHeatCommandFactory');
 const CallingForHeatRepository = require('./CallingForHeatRepository.js').CallingForHeatRepository;
 const CallingForHeatFileWriter = require('./CallingForHeatFileWriter').CallingForHeatFileWriter;
+const fs = require('fs');
 
 const DEFAULTS = {
   INTERVAL_SECONDS: 30,

@@ -18,7 +18,7 @@ function callingForHeatFileWriter(fileLocationPath) {
         const filePath = getFilePath();
 
         try {
-            fs.writeFileSync(filePath, value, 'utf8');
+            fs.writeFileSync(filePath, `${value}`, 'utf8');
         } catch (e) {
             console.log(`${new Date().toISOString()} Failed to write ${filePath}. Exception: ${e}`);
         }

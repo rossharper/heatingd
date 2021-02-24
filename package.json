@@ -13,7 +13,7 @@
   },
   "author": "Ross Harper <ross@rossharper.net>",
   "dependencies": {
-    "heatingprogramme": "rossharper/heatingprogramme"
+    "heatingprogramme": "rossharper/heatingprogramme#1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

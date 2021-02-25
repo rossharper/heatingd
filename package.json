@@ -4,7 +4,8 @@
   "description": "Heating control daemon.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test": "nyc mocha",
+    "cov": "nyc --reporter=html --reporter=text mocha",
     "lint": "eslint ."
   },
   "repository": {
@@ -24,7 +25,8 @@
     "eslint-plugin-mocha": "^6.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
-    "mocha": "^7.1.2"
+    "mocha": "^7.1.2",
+    "nyc": "^15.1.0"
   },
   "eslintConfig": {
     "rules": {

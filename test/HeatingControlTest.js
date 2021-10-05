@@ -242,7 +242,7 @@ describe('Heating Control', () => {
         assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
     })
 
-    it('should set call for heat TRUE on progamme changed when current temperature in switching differential', () => {
+    it('should set call for heat FALSE on progamme changed when current temperature matches target temperature', () => {
     // arrange
         const callingForHeatRepositoryDouble = new CallingForHeatRepositoryDouble(false)
         const temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(20.00)
@@ -258,6 +258,26 @@ describe('Heating Control', () => {
         assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
 
         heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(20.00))
+
+        assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
+    })
+
+    it('should set call for heat TRUE on progamme changed when current temperature in switching differential and was previously calling for heat', () => {
+        // arrange
+        const callingForHeatRepositoryDouble = new CallingForHeatRepositoryDouble(true)
+        const temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(20.59)
+        const heatingControl = new HeatingControl(
+            programmeDoubleWithTargetTemperature(20.50),
+            temperatureProviderDouble,
+            callingForHeatRepositoryDouble
+        )
+
+        // act
+        heatingControl.onInterval()
+
+        assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
+
+        heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(21.00))
 
         assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
     })
@@ -280,5 +300,66 @@ describe('Heating Control', () => {
         heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(19.00))
 
         assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
+    })
+
+    it('should continue calling for heat when temp upped twice within differential', () => {
+        // arrange
+        const callingForHeatRepositoryDouble = new CallingForHeatRepositoryDouble(true)
+        const temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(20.59)
+        const heatingControl = new HeatingControl(
+            programmeDoubleWithTargetTemperature(20.00),
+            temperatureProviderDouble,
+            callingForHeatRepositoryDouble
+        )
+
+        // act
+        heatingControl.onInterval()
+
+        assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
+
+        heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(20.50))
+        heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(21.00))
+
+        assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
+    })
+
+    it('should stop calling for heat when target temp lowered and current temp above target', () => {
+        // arrange
+        const callingForHeatRepositoryDouble = new CallingForHeatRepositoryDouble(true)
+        const temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(19.9)
+        const heatingControl = new HeatingControl(
+            programmeDoubleWithTargetTemperature(20.00),
+            temperatureProviderDouble,
+            callingForHeatRepositoryDouble
+        )
+
+        // act
+        heatingControl.onInterval()
+
+        assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
+
+        heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(19.50))
+
+        assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
+    })
+
+    it('should start calling for heat when target temp raised and current temp below target', () => {
+        // arrange
+        const callingForHeatRepositoryDouble = new CallingForHeatRepositoryDouble(false)
+        const temperatureProviderDouble = temperatureProviderDoubleWithCurrentTemperature(20.10)
+        const heatingControl = new HeatingControl(
+            programmeDoubleWithTargetTemperature(20.00),
+            temperatureProviderDouble,
+            callingForHeatRepositoryDouble
+        )
+
+        // act
+        heatingControl.onInterval()
+
+        assert.isFalse(callingForHeatRepositoryDouble.getCallingForHeat())
+
+        heatingControl.onProgrammeChanged(programmeDoubleWithTargetTemperature(20.50))
+
+        assert.isTrue(callingForHeatRepositoryDouble.getCallingForHeat())
     })
 })

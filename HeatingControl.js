@@ -8,7 +8,19 @@ function HeatingControl (programme, currentTemperatureProvider, callingForHeatRe
     }
 
     this.onProgrammeChanged = function (updatedProgramme) {
-        callingForHeatRepository.setCallingForHeat(!callingForHeatRepository.getCallingForHeat())
+        const oldTargetTemp = getTargetTemperature()
+        const newTargetTemp = updatedProgramme.getCurrentTargetTemperature(new Date())
+        const currentTemp = currentTemperatureProvider.getCurrentTemperature()
+
+        const tempTurnedDown = newTargetTemp < oldTargetTemp
+        const tempTurnedUp = newTargetTemp > oldTargetTemp
+
+        if (tempTurnedDown && currentTemp > newTargetTemp) {
+            callingForHeatRepository.setCallingForHeat(false)
+        } else if (tempTurnedUp && currentTemp < newTargetTemp) {
+            callingForHeatRepository.setCallingForHeat(true)
+        }
+
         programme = updatedProgramme
         update()
     }

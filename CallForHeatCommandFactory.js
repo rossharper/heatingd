@@ -2,17 +2,29 @@
 
 const exec = require('child_process').execSync
 
-function CallForHeatOnCommand () {
-    this.execute = function () {
-        console.log(`${new Date().toISOString()} Calling for heat ON`)
-        exec('callforheat 1')
+function CallForHeatOnCommand (executeCallForHeatCommand) {
+    if (executeCallForHeatCommand) {
+        this.execute = function () {
+            console.log(`${new Date().toISOString()} Calling for heat ON`)
+            exec('callforheat 1')
+        }
+    } else {
+        this.execute = function () {
+            console.log(`${new Date().toISOString()} Switch ON (not calling command)`)
+        }
     }
 }
 
-function CallForHeatOffCommand () {
-    this.execute = function () {
-        console.log(`${new Date().toISOString()} Calling for heat OFF`)
-        exec('callforheat 0')
+function CallForHeatOffCommand (executeCallForHeatCommand) {
+    if (executeCallForHeatCommand) {
+        this.execute = function () {
+            console.log(`${new Date().toISOString()} Calling for heat OFF`)
+            exec('callforheat 0')
+        }
+    } else {
+        this.execute = function () {
+            console.log(`${new Date().toISOString()} Switch OFF (not calling command`)
+        }
     }
 }
 

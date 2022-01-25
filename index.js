@@ -13,14 +13,16 @@ const fs = require('fs')
 const DEFAULTS = {
     INTERVAL_SECONDS: 30,
     SENSOR_DATA_PATH: '/var/lib/homecontrol/sensordata/temperatureSensors/TA',
-    PROGRAMME_DATA_PATH: '/var/lib/homecontrol/programdata'
+    PROGRAMME_DATA_PATH: '/var/lib/homecontrol/programdata',
+    EXECUTE_CALL_FOR_HEAT: true
 }
 
 function usage () {
     console.log('Usage: ')
-    console.log('  node index.js [-i <INTERVAL_IN_SECONDS>] [-sensorpath <SENSOR_DATA_PATH>]')
+    console.log('  node index.js [-x] [-i <INTERVAL_IN_SECONDS>] [-sensorpath <SENSOR_DATA_PATH>]')
     console.log('       [-programme <PROGRAMME_DATA_PATH>]')
     console.log('')
+    console.log('         -x    don\'t execute call for heat command')
     console.log('         -i    the interval between comparing temperatures and calling for heat')
     console.log('-sensorpath    path at which temperature sensor readings can be read')
     console.log(' -programme    path at which programme/schedule data can be found')
@@ -31,7 +33,8 @@ function parseArgs () {
     const args = {
         updateIntervalSeconds: DEFAULTS.INTERVAL_SECONDS,
         sensorDataPath: DEFAULTS.SENSOR_DATA_PATH,
-        programmeDataPath: DEFAULTS.PROGRAMME_DATA_PATH
+        programmeDataPath: DEFAULTS.PROGRAMME_DATA_PATH,
+        executeCallForHeat: DEFAULTS.EXECUTE_CALL_FOR_HEAT
     }
 
     let argi = 2
@@ -51,6 +54,8 @@ function parseArgs () {
             args.sensorDataPath = readArgValue()
         } else if (hasArg('-programme')) {
             args.programmeDataPath = readArgValue()
+        } else if (hasArg("-x")) {
+            args.executeCallForHeat = false
         } else {
             usage()
         }
@@ -74,8 +79,8 @@ function start (args) {
             new CallingForHeatRepository(
                 false,
                 new CallingForHeatFileWriter(args.programmeDataPath),
-                new CallForHeatCommandFactory.CallForHeatOnCommand(),
-                new CallForHeatCommandFactory.CallForHeatOffCommand())
+                new CallForHeatCommandFactory.CallForHeatOnCommand(args.executeCallForHeat),
+                new CallForHeatCommandFactory.CallForHeatOffCommand(args.executeCallForHeat))
         )
 
         ProgrammeChangeWatcher.watchForChanges(args.programmeDataPath, (updatedProgramme) => {

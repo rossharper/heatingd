@@ -54,7 +54,7 @@ function parseArgs () {
             args.sensorDataPath = readArgValue()
         } else if (hasArg('-programme')) {
             args.programmeDataPath = readArgValue()
-        } else if (hasArg("-x")) {
+        } else if (hasArg('-x')) {
             args.executeCallForHeat = false
         } else {
             usage()
